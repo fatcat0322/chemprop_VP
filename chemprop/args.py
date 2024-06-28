@@ -320,9 +320,8 @@ class TrainArgs(CommonArgs):
     """
 
     # Model arguments
-    fp_method: Literal['molecular', 'atomic',
-                       'morgan', 'hybrid_dim0', 'hybrid_dim1'] = 'atomic'
-    """Methods for predicting heat of formation. """
+    fp_method: Literal['molecular', 'atomic'] = 'atomic'
+    """Methods for predicting vapor pressure. """
     bias: bool = False
     """Whether to add bias to linear layers."""
     hidden_size: int = 300
@@ -688,6 +687,8 @@ class PredictArgs(CommonArgs):
     """Whether to calculate the variance of ensembles as a measure of epistemic uncertainty. If True, the variance is saved as an additional column for each target in the preds_path."""
     individual_ensemble_predictions: bool = False
     """Whether to return the predictions made by each of the individual models rather than the average of the ensemble"""
+    predict_only: bool = False
+    """Whether to predict the results only and do not evaluate the model performance."""
 
     @property
     def ensemble_size(self) -> int:

@@ -200,13 +200,16 @@ def predict_and_save(args: PredictArgs, train_args: TrainArgs, test_data: Molecu
             data_loader=test_data_loader,
             scaler=scaler
         )
-        test_scores = evaluate_predictions(
-            preds=model_preds,
-            targets=test_targets,
-            num_tasks=train_args.num_tasks,
-            metrics=train_args.metrics,
-            dataset_type=train_args.dataset_type
-        )
+        if not args.predict_only:
+            test_scores = evaluate_predictions(
+                preds=model_preds,
+                targets=test_targets,
+                num_tasks=train_args.num_tasks,
+                metrics=train_args.metrics,
+                dataset_type=train_args.dataset_type
+            )
+        else:
+            test_scores='NAN'
         print(f'Model {index} test {train_args.metric}: {test_scores}')
         if args.dataset_type == 'spectra':
             model_preds = normalize_spectra(
@@ -225,23 +228,25 @@ def predict_and_save(args: PredictArgs, train_args: TrainArgs, test_data: Molecu
     # Ensemble predictions
     avg_preds = sum_preds / len(args.checkpoint_paths)
 
-    ens_scores = evaluate_predictions(
-        preds=avg_preds,
-        targets=test_targets,
-        num_tasks=train_args.num_tasks,
-        metrics=train_args.metrics,
-        dataset_type=train_args.dataset_type
-    )
-    print(f'Overall test {train_args.metric}: {ens_scores}')
-
-    if 'train' in args.test_path:
-        mode = 'Train'
-    elif 'val' in args.test_path:
-        mode = 'Validation'
+    if not args.predict_only:
+        ens_scores = evaluate_predictions(
+            preds=avg_preds,
+            targets=test_targets,
+            num_tasks=train_args.num_tasks,
+            metrics=train_args.metrics,
+            dataset_type=train_args.dataset_type
+        )
+        if 'train' in args.test_path:
+            mode = 'Train'
+        elif 'val' in args.test_path:
+            mode = 'Validation'
+        else:
+            mode = 'Test'
+        pred_true_curve(args, avg_preds, test_targets,
+                        cur_name='lnP ' + mode + '-True parity plot', unit_name='lnP (P in Pa)')
     else:
-        mode = 'Test'
-    pred_true_curve(args, avg_preds, test_targets,
-                    cur_name='lnP ' + mode + '-True parity plot', unit_name='lnP (P in Pa)')
+        ens_scores='NAN'
+    print(f'Overall test {train_args.metric}: {ens_scores}')
 
     if args.ensemble_variance:
         if args.dataset_type == 'spectra':
