@@ -1,6 +1,6 @@
 # chemprop_VP
 
-To set up the environment, run the following command:
+To set up the environment, run the following command for CentOS 7 (Linux):
 ```sh
 conda env create -f environment.yml
 ```
