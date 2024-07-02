@@ -208,9 +208,9 @@ def predict_and_save(args: PredictArgs, train_args: TrainArgs, test_data: Molecu
                 metrics=train_args.metrics,
                 dataset_type=train_args.dataset_type
             )
+            print(f'Model {index} test {train_args.metric}: {test_scores}')
         else:
             test_scores='NAN'
-        print(f'Model {index} test {train_args.metric}: {test_scores}')
         if args.dataset_type == 'spectra':
             model_preds = normalize_spectra(
                 spectra=model_preds,
@@ -244,9 +244,10 @@ def predict_and_save(args: PredictArgs, train_args: TrainArgs, test_data: Molecu
             mode = 'Test'
         pred_true_curve(args, avg_preds, test_targets,
                         cur_name='lnP ' + mode + '-True parity plot', unit_name='lnP (P in Pa)')
+        print(f'Overall test {train_args.metric}: {ens_scores}')
     else:
         ens_scores='NAN'
-    print(f'Overall test {train_args.metric}: {ens_scores}')
+    
 
     if args.ensemble_variance:
         if args.dataset_type == 'spectra':
