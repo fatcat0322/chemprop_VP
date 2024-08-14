@@ -1,4 +1,4 @@
-conda activate chemprop_VP1
+conda activate chemprop_VP
 
 python predict.py \
     --checkpoint_dir saved_models/molecule_split/Wagner_mols \
