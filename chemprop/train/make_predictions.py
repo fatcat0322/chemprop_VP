@@ -218,7 +218,7 @@ def predict_and_save(args: PredictArgs, train_args: TrainArgs, test_data: Molecu
                 phase_mask=args.spectra_phase_mask,
                 excluded_sub_value=float('nan')
             )
-        sum_preds += np.array(model_preds)
+        sum_preds += np.array(model_preds,dtype=float)
         if args.ensemble_variance or args.individual_ensemble_predictions:
             if args.dataset_type == 'multiclass':
                 all_preds[:, :, :, index] = model_preds
